@@ -122,7 +122,7 @@
                     <div id="div" class="text-center float-right" style="color: red; font-size: 13px; font-weight: bold;"></div>
                     <div id="timer" class="text-center" style="color: green; font-size: 15px; font-weight: bold; margin-bottom: 20px;padding: 10px 110px 0px 110px;"></div>
                     <div id="videoCanvasDiv">
-                        <canvas id="videoCanvas" class="mb-2"></canvas>
+                        <canvas controls autoplay muted playsinline id="videoCanvas" class="mb-2"></canvas>
                     </div>
                     <div id="previewvid" style="display: none;">
                         <video id="preview" class="mb-2" controls autoplay muted playsinline height="auto"></video>
@@ -185,6 +185,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
+    
         let stream;
         let mediaRecorder;
         let chunks = [];
@@ -257,9 +258,11 @@
         function startVideoStream() {
             navigator.mediaDevices.getUserMedia({
                     video: {
+                        facingMode: { exact: "environment" },
                         width: 320,
                         height: 240,
-                        frameRate: 15
+                        frameRate: 15,
+                        facingMode: "user"
                     }
                 })
                 .then((mediaStream) => {
@@ -299,7 +302,7 @@
                     console.error('Error accessing media devices.', error);
                 });
             // Update date and time continuously
-            setInterval(updateDateTime, 1000);
+            // setInterval(updateDateTime, 1000);
         }
 
         function reRecordVideo() {
@@ -459,7 +462,6 @@ function formatDate(date) {
     const hr = date.getHours().toString().padStart(2, '0');
     const mn = date.getMinutes().toString().padStart(2, '0');
     const sec = date.getSeconds().toString().padStart(2, '0');
-
     return day + '/' + month + '/' + year + ' ' + hr + ':' + mn + ':' + sec;
 }
 
