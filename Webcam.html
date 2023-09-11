@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Recording Example</title>
+    <!-- Add Bootstrap CSS -->
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="font-family.css">
+    <style>
+        html, body  {
+    background: #d7dadd;
+    font-family: 'Josefin Sans',Arial,"Microsoft JhengHei","fontawesome",serif;
+    
+}
+
+
+        #cameraQuality {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Adjust styling for Bootstrap */
+        .container {
+            margin-top: 20px;
+        }
+
+        .videocard {
+            text-align: center;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 1px 3px rgb(0 0 0/ 12%), 0 1px 2px rgb(0 0 0/ 24%);
+        }
+
+        .contcard {
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgb(0 0 0/ 12%), 0 1px 2px rgb(0 0 0/ 24%);
+        }
+
+        #videoCanvas {
+            border: 1px solid #050202;
+            height: 240px;
+            width: 320px;
+        }
+
+        #buttonsContainer {
+            margin-top: 20px;
+        }
+
+        .navbar {
+            background: #00458b;
+        }
+
+        .navbar-brand img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .title {
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            background: #00458b;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .caption {
+            color: red;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        #dateTimeOverlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .fadeInRight {
+    animation: fadeInRight 1s both;
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translate3d(100%, 0, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="http://localhost:8080/OkycEsignV1/assets/img/ecsLogoIndex.jpg" width="100" height="40" class="d-inline-block align-top" alt="">
+        </a>
+    </nav>
+
+    <div class="container mt-4">
+        <div class=" row ">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                <div class="card videocard">
+                    <div class="title lg-4">Take a Video</div>
+                    <div id="div" class="text-center float-right" style="color: red; font-size: 13px; font-weight: bold;"></div>
+                    <div id="timer" class="text-center" style="color: green; font-size: 15px; font-weight: bold; margin-bottom: 20px;padding: 10px 110px 0px 110px;"></div>
+                    <div id="videoCanvasDiv">
+                        <canvas id="videoCanvas" class="mb-2"></canvas>
+                    </div>
+                    <div id="previewvid" style="display: none;">
+                        <video id="preview" class="mb-2" controls autoplay muted playsinline height="auto"></video>
+
+                    </div>
+                    <div>
+                    <span class="caption">Read the caption shown Below:</span>
+                    <br>
+                    <span id="textMSG">My name is <span style="font-weight:bold;" id="myName">TEST USER</span> and I
+                        want to apply for a DSC through Care4Sign. The code is <span style="font-weight:bold;" id="ranCode"> 123</span></span>
+                    </div>
+                        <div id="buttonsContainer">
+                        <div id="recordBtnDiv">
+                            <button id="recordBtn" class="btn btn-primary">Start Recording</button>
+                        </div>
+                        <div id="rersubBtn" style="display: none;">
+                            <button id="rerecordBtn" class="btn btn-primary"> Rerecord Video</button>
+
+                            <button id="submitbtn" class="btn btn-primary"> Submit</button>
+                        </div>
+                        <div id="timer" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+                <div class="card contcard">
+                    <div class="md-card-content" style="padding: 0px;">
+                        <p style="font-size: 20px; color: #00458b; font-weight: bold;">Video Recording
+                            instructions:-</p>
+                        <p style="font-size: 16px;display: block;">* Subscriber should show original Documents</p>
+                        <p style="font-size: 16px;">* The video of subscriber wearing any accessories like cap,
+                            headgear, eyeglasses, headphones and/or sun glasses shall not be accepted.</p>
+                    </div>
+                </div>
+                <br>
+                <div class="md-card one animate fadeInRight" style="background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; display: none;" id="CaptionAlert">
+                    <div class="md-card-content" style="padding: 0px;">
+                      <p style="font-size: 18px; color: #00458b; font-weight: bold;text-align: center;">
+                        <img src="http://localhost:8080/OkycEsignV1/images/alert.gif" style="width: auto; height: 70px;"> Read the caption below video
+                      </p>
+                    </div>
+                  </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4" style="display: none;">
+        <div id="previewSize"></div>
+        <div id="compressedSize"></div>
+        <br>
+        <textarea id="compressedBase64Text" class="form-control" rows="5" readonly></textarea>
+        <button id="copyBase64Value" class="btn btn-info mt-2">Copy Base64 Value</button>
+        <button id="downloadBase64" class="btn btn-success mt-2">Download Base64 as Text File</button>
+    </div>
+
+
+    <!-- Add Bootstrap JavaScript and jQuery (required for some Bootstrap features) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        let stream;
+        let mediaRecorder;
+        let chunks = [];
+        let isRecording = false;
+        let countdownInterval;
+        let isCanvasVisible = true;
+
+        const videoCanvas = document.getElementById('videoCanvas');
+        const recordButton = document.getElementById('recordBtn');
+        const rerecordBtn = document.getElementById('rerecordBtn');
+        const submitbtn = document.getElementById('submitbtn');
+        const timerElement = document.getElementById('timer');
+        const previewElement = document.getElementById('preview');
+        const previewSizeElement = document.getElementById('previewSize');
+        const compressedSizeElement = document.getElementById('compressedSize');
+        const compressedBase64Text = document.getElementById('compressedBase64Text');
+        const cameraQualityElement = document.getElementById('cameraQuality');
+        const copyBase64Button = document.getElementById('copyBase64Value');
+        const downloadBase64Button = document.getElementById('downloadBase64');
+        const recordBtnDiv = document.getElementById('recordBtnDiv');
+        const videoCanvasDiv = document.getElementById('videoCanvasDiv');
+        const previewVideoDiv = document.getElementById('previewvid');
+        const rersubBtn = document.getElementById('rersubBtn');
+        // Start video stream when the page loads
+        document.addEventListener('DOMContentLoaded', startVideoStream);
+
+        // Start video recording
+        rersubBtn.addEventListener('click', startVideoRecording);
+
+        // Copy Base64 Value to Clipboard
+        copyBase64Button.addEventListener('click', copyBase64ToClipboard);
+
+        // Download Base64 as Text File
+        downloadBase64Button.addEventListener('click', downloadBase64TextFile);
+        
+        // Record button click event
+        recordBtnDiv.addEventListener('click', reRecordVideo);
+
+        // Re-record button click event
+        rerecordBtn.addEventListener('click', reRecordVideo);
+
+     // Add a click event listener to the "Start Recording" button
+        recordBtnDiv.addEventListener('click', function () {
+        const captionAlert = document.getElementById('CaptionAlert');
+
+        // Add the fadeInRight class to trigger the animation
+        captionAlert.classList.add('fadeInRight');
+
+       // Show the captionAlert div
+       captionAlert.style.display = 'block';
+      });
+      
+
+        // Function to hide the canvas and display the preview video
+        function hideCanvasAndShowPreview() {
+            videoCanvasDiv.style.display = 'none';
+            previewVideoDiv.style.display = 'block';
+            rersubBtn.style.display = 'block';
+            recordBtnDiv.style.display = 'none';
+        }
+
+        // Function to show the canvas and hide the preview video
+        function showCanvasAndHidePreview() {
+            videoCanvasDiv.style.display = 'block';
+            previewVideoDiv.style.display = 'none';
+            rersubBtn.style.display = 'none';
+            recordBtnDiv.style.display = 'block';
+        }
+
+        function startVideoStream() {
+            navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: 320,
+                        height: 240,
+                        frameRate: 15
+                    }
+                })
+                .then((mediaStream) => {
+                    stream = mediaStream;
+                    const ctx = videoCanvas.getContext('2d');
+                    videoCanvas.width = 320;
+                    videoCanvas.height = 240;
+
+                    // Play the live video stream on the canvas
+                    const video = document.createElement('video');
+                    video.srcObject = mediaStream;
+                    video.onloadedmetadata = () => {
+                        video.play();
+                        const drawVideoFrame = () => {
+                     // Set the canvas background color to black
+                     ctx.globalAlpha = 0.3;
+                     ctx.fillStyle = "black";
+                     ctx.fillRect(0, 0, videoCanvas.width,22, videoCanvas.height);
+                     // Draw the video on the canvas
+                     ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
+
+                     // Display date and time on the canvas on the right side
+                     const now = new Date();
+                     const formattedDateTime = formatDate(now);
+                     ctx.globalAlpha = 1;
+                     ctx.fillStyle = 'white';
+                     ctx.font = '12px Arial';
+                     ctx.textAlign = 'right'; // Align text to the right
+                     ctx.fillText(formattedDateTime, videoCanvas.width -8, 20);
+
+                      requestAnimationFrame(drawVideoFrame);
+                    };
+                        drawVideoFrame();
+                    };
+                })
+                .catch((error) => {
+                    console.error('Error accessing media devices.', error);
+                });
+            // Update date and time continuously
+            setInterval(updateDateTime, 1000);
+        }
+
+        function reRecordVideo() {
+            if (!isRecording) {
+                // Clear the previous preview and compressed video
+                previewElement.src = '';
+                previewSizeElement.textContent = '';
+                compressedSizeElement.textContent = '';
+                compressedBase64Text.value = '';
+
+                // Reset the record button
+                recordButton.disabled = false;
+                
+                // Start recording again
+                showCanvasAndHidePreview();
+                startVideoRecording();
+            }
+        }
+
+        function startVideoRecording() {
+            if (!isRecording) {
+
+                recordButton.disabled = true;
+                rerecordBtn.disabled = true; 
+                submitbtn.disabled = true;
+                mediaRecorder = new MediaRecorder(videoCanvas.captureStream());
+                mediaRecorder.start();
+                isRecording = true;
+
+                let remainingSeconds = 5;
+                countdownInterval = setInterval(() => {
+                    remainingSeconds--;
+                     // Format the remaining time in HH:MM:SS format
+                     timerElement.textContent = `Recording Started: Time Remaining: ${formatTime(remainingSeconds)}`;
+
+                    if (remainingSeconds === 0) {
+                        clearInterval(countdownInterval);
+                        mediaRecorder.stop();
+                        isRecording = false;
+                        recordBtn.disabled = true; // Disable the Start Recording button
+                        rerecordBtn.disabled = false; 
+                        submitbtn.disabled = false;                    
+                        timerElement.textContent = '';
+                    }
+                }, 1000);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    chunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const videoBlob = new Blob(chunks);
+                    previewElement.src = URL.createObjectURL(videoBlob);
+                    previewElement.loop = true;
+                    previewElement.play();
+                    chunks = [];
+
+                    displayVideoSize(videoBlob, previewSizeElement);
+
+                    const compressedVideoBlob = await compressVideo(videoBlob);
+                    displayVideoSize(compressedVideoBlob, compressedSizeElement);
+
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64data = reader.result;
+                        const base64WithoutType = base64data.split(',')[1];
+                        compressedBase64Text.value = base64WithoutType;
+                        console.log('Compressed Video Base64 Value:', base64WithoutType);
+
+                        // Set the Base64 video source for preview
+                        previewElement.src = `data:video/mp4;base64,${base64WithoutType}`;
+                    };
+                    reader.readAsDataURL(compressedVideoBlob);
+                    hideCanvasAndShowPreview();
+                };
+            }
+        }
+         // Function to format time in HH:MM:SS format
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+        // Display video size
+        function displayVideoSize(videoBlob, element) {
+            const fileSizeMB = (videoBlob.size / 1024 / 1024).toFixed(2);
+            const fileSizeKB = Math.round(videoBlob.size / 1024);
+            element.textContent = `Video Size: ${fileSizeMB} MB (${fileSizeKB} KB)`;
+        }
+
+        async function compressVideo(videoBlob) {
+            const compressedBlob = await transcodeVideo(videoBlob);
+            return compressedBlob;
+        }
+
+        async function transcodeVideo(videoBlob) {
+            const transcoder = new VideoTranscoder();
+            const options = {
+                quality: 'low',
+            };
+            const compressedBlob = await transcoder.transcode(videoBlob, options);
+            return compressedBlob;
+        }
+
+        class VideoTranscoder {
+            async transcode(videoBlob, options) {
+                // Simulating video transcoding process
+                await sleep(3000); // Simulate processing time
+                return videoBlob;
+            }
+        }
+
+        // Helper function for delaying execution
+        function sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        // Copy the Base64 value to clipboard
+        function copyBase64ToClipboard() {
+            compressedBase64Text.select();
+            document.execCommand('copy');
+            alert('Base64 Value Copied to Clipboard');
+        }
+
+        // Download Base64 as a text file
+        function downloadBase64TextFile() {
+            const base64Data = compressedBase64Text.value;
+            const blob = new Blob([base64Data], {
+                type: 'text/plain'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'base64data.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // Function to update the date and time
+        function updateDateTime() {
+            const dateTimeElement = document.getElementById('dateTime');
+            const now = new Date();
+            const formattedDateTime = formatDate(now);
+            dateTimeElement.textContent = formattedDateTime;
+        }
+
+       
+        // Function to format date and time
+function formatDate(date) {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    const hr = date.getHours().toString().padStart(2, '0');
+    const mn = date.getMinutes().toString().padStart(2, '0');
+    const sec = date.getSeconds().toString().padStart(2, '0');
+
+    return day + '/' + month + '/' + year + ' ' + hr + ':' + mn + ':' + sec;
+}
+
+    </script>
+</body>
+
+</html>
