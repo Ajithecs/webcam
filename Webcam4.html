@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Video with Text Overlay</title>
+</head>
+<body>
+    <video id="video" autoplay style="display: none;"></video>
+    <canvas id="canvas"></canvas>
+    <button id="recordButton">Record</button>
+    <button id="stopButton" disabled>Stop</button>
+    <video id="preview" controls style="display: none;"></video>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const recordButton = document.getElementById('recordButton');
+        const stopButton = document.getElementById('stopButton');
+        const previewVideo = document.getElementById('preview');
+
+        let mediaRecorder;
+        let chunks = [];
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    mediaRecorder = new MediaRecorder(canvas.captureStream());
+
+                    mediaRecorder.ondataavailable = function(event) {
+                        if (event.data.size > 0) {
+                            chunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = function() {
+                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const videoURL = URL.createObjectURL(blob);
+                        previewVideo.src = videoURL;
+                        previewVideo.style.display = 'block';
+                    };
+
+                    recordButton.addEventListener('click', () => {
+                        mediaRecorder.start();
+                        recordButton.disabled = true;
+                        stopButton.disabled = false;
+                        setTimeout(() => {
+                            stopRecording();
+                        }, 5000); // Record for 5 seconds
+                    });
+
+                    stopButton.addEventListener('click', () => {
+                        stopRecording();
+                    });
+
+                    function stopRecording() {
+                        mediaRecorder.stop();
+                        recordButton.disabled = false;
+                        stopButton.disabled = true;
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error accessing the webcam:', error);
+                });
+        } else {
+            console.error('Webcam access not supported on this browser');
+        }
+
+        video.onplay = function() {
+            function updateCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                ctx.font = '20px Arial';
+                ctx.fillStyle = 'white';
+                ctx.fillText('Your Text Here', 20, 30); // Adjust the position as needed
+                requestAnimationFrame(updateCanvas);
+            }
+
+            updateCanvas();
+        };
+    </script>
+</body>
+</html>
