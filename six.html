@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Stream with Text Overlay</title>
+</head>
+<body>
+    <video id="video" width="240px" height="180px" style="display: none;" autoplay></video>
+    <canvas id="canvas" width="240px" height="180px"></canvas>
+    <button id="startStreamButton">Start Stream</button>
+    <button id="stopStreamButton" disabled>Stop Stream</button>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const startStreamButton = document.getElementById('startStreamButton');
+        const stopStreamButton = document.getElementById('stopStreamButton');
+        let mediaStream;
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            startStreamButton.addEventListener('click', () => {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        mediaStream = stream;
+                        video.srcObject = mediaStream;
+
+                        startStreamButton.disabled = true;
+                        stopStreamButton.disabled = false;
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing the webcam:', error);
+                    });
+            });
+
+            stopStreamButton.addEventListener('click', () => {
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    video.srcObject = null;
+                    startStreamButton.disabled = false;
+                    stopStreamButton.disabled = true;
+                }
+            });
+
+            video.onplay = function() {
+                function updateCanvas() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    ctx.font = '20px Arial';
+                    ctx.fillStyle = 'white';
+                    ctx.fillText('Your Text Here', 20, 30); // Adjust the position as needed
+                    requestAnimationFrame(updateCanvas);
+                }
+
+                updateCanvas();
+            };
+        } else {
+            console.error('Webcam access not supported on this browser');
+        }
+    </script>
+</body>
+</html>
