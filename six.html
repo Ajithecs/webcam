@@ -3,39 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Vide oAjith</title>
+    <title>Webcam Video with Text Overlay</title>
 </head>
 <body>
-    <video id="video"  autoplay></video>
-    <canvas id="canvas" width="240px" height="180px"style="display:none;"></canvas>
-    <button id="startRecordButton">Start Record</button>
-    <button id="stopRecordButton" disabled>Stop Record</button>
+    <video id="video" width="240px" height="180px" autoplay playsinline></video>
+    <canvas id="canvas" width="240px" height="180px" style="display: none;"></canvas>
+    <button id="recordButton">Record</button>
+    <button id="stopButton" disabled>Stop</button>
     <video id="preview" controls style="display: none;"></video>
 
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const startRecordButton = document.getElementById('startRecordButton');
-        const stopRecordButton = document.getElementById('stopRecordButton');
+        const recordButton = document.getElementById('recordButton');
+        const stopButton = document.getElementById('stopButton');
         const previewVideo = document.getElementById('preview');
 
         let mediaRecorder;
         let chunks = [];
 
-        async function initCamera() {
+        // Request camera access on page load
+        async function setupCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = stream;
                 mediaRecorder = new MediaRecorder(canvas.captureStream());
 
-                mediaRecorder.ondataavailable = function (event) {
+                mediaRecorder.ondataavailable = function(event) {
                     if (event.data.size > 0) {
                         chunks.push(event.data);
                     }
                 };
 
-                mediaRecorder.onstop = function () {
+                mediaRecorder.onstop = function() {
                     const blob = new Blob(chunks, { type: 'video/webm' });
                     const videoURL = URL.createObjectURL(blob);
                     previewVideo.src = videoURL;
@@ -43,7 +44,7 @@
 
                     // Convert the recorded video to Base64
                     const reader = new FileReader();
-                    reader.onloadend = function () {
+                    reader.onloadend = function() {
                         const base64Data = reader.result.split(',')[1];
                         console.log('Base64-encoded video:', base64Data);
 
@@ -52,29 +53,33 @@
                     reader.readAsDataURL(blob);
                 };
 
-                startRecordButton.addEventListener('click', () => {
+                recordButton.addEventListener('click', () => {
                     mediaRecorder.start();
-                    startRecordButton.disabled = true;
-                    stopRecordButton.disabled = false;
+                    recordButton.disabled = true;
+                    stopButton.disabled = false;
+                    setTimeout(() => {
+                        stopRecording();
+                    }, 5000); // Record for 5 seconds
                 });
 
-                stopRecordButton.addEventListener('click', () => {
+                stopButton.addEventListener('click', () => {
                     stopRecording();
                 });
+
+                function stopRecording() {
+                    mediaRecorder.stop();
+                    recordButton.disabled = false;
+                    stopButton.disabled = true;
+                }
             } catch (error) {
                 console.error('Error accessing the webcam:', error);
             }
         }
 
-        initCamera();
+        // Call setupCamera on page load
+        window.addEventListener('load', setupCamera);
 
-        function stopRecording() {
-            mediaRecorder.stop();
-            startRecordButton.disabled = false;
-            stopRecordButton.disabled = true;
-        }
-
-        video.onplay = function () {
+        video.onplay = function() {
             function updateCanvas() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
