@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Video Ajith</title>
+    <title>Webcam Video with Text Overlay</title>
 </head>
 <body>
-    <video id="video" width="240px" height="180px"autoplay></video>
-    <canvas id="canvas" width="240px" height="180px" style="display: none;"></canvas>
+    <video id="video" width="240px" height="180px" autoplay playsinline style="display: none;"></video>
+    <canvas id="canvas" width="240px" autoplay playsinline height="180px" ></canvas>
     <button id="recordButton">Record</button>
     <button id="stopButton" disabled>Stop</button>
     <video id="preview" controls style="display: none;"></video>
@@ -23,60 +23,61 @@
         let mediaRecorder;
         let chunks = [];
 
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    video.srcObject = stream;
-                    mediaRecorder = new MediaRecorder(canvas.captureStream());
+        // Request camera access on page load
+        async function setupCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(canvas.captureStream());
 
-                    mediaRecorder.ondataavailable = function(event) {
-                        if (event.data.size > 0) {
-                            chunks.push(event.data);
-                        }
-                    };
-
-                    mediaRecorder.onstop = function() {
-                        const blob = new Blob(chunks, { type: 'video/webm' });
-                        const videoURL = URL.createObjectURL(blob);
-                        previewVideo.src = videoURL;
-                        previewVideo.style.display = 'block';
-
-                        // Convert the recorded video to Base64
-                        const reader = new FileReader();
-                        reader.onloadend = function() {
-                            const base64Data = reader.result.split(',')[1];
-                            console.log('Base64-encoded video:', base64Data);
-
-                            previewVideo.src = `data:video/mp4;base64,${base64Data}`;
-                        };
-                        reader.readAsDataURL(blob);
-                    };
-
-                    recordButton.addEventListener('click', () => {
-                        mediaRecorder.start();
-                        recordButton.disabled = true;
-                        stopButton.disabled = false;
-                        setTimeout(() => {
-                            stopRecording();
-                        }, 5000); // Record for 5 seconds
-                    });
-
-                    stopButton.addEventListener('click', () => {
-                        stopRecording();
-                    });
-
-                    function stopRecording() {
-                        mediaRecorder.stop();
-                        recordButton.disabled = false;
-                        stopButton.disabled = true;
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        chunks.push(event.data);
                     }
-                })
-                .catch(function(error) {
-                    console.error('Error accessing the webcam:', error);
+                };
+
+                mediaRecorder.onstop = function() {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const videoURL = URL.createObjectURL(blob);
+                    previewVideo.src = videoURL;
+                    previewVideo.style.display = 'block';
+
+                    // Convert the recorded video to Base64
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const base64Data = reader.result.split(',')[1];
+                        console.log('Base64-encoded video:', base64Data);
+
+                        previewVideo.src = `data:video/mp4;base64,${base64Data}`;
+                    };
+                    reader.readAsDataURL(blob);
+                };
+
+                recordButton.addEventListener('click', () => {
+                    mediaRecorder.start();
+                    recordButton.disabled = true;
+                    stopButton.disabled = false;
+                    setTimeout(() => {
+                        stopRecording();
+                    }, 5000); // Record for 5 seconds
                 });
-        } else {
-            console.error('Webcam access not supported on this browser');
+
+                stopButton.addEventListener('click', () => {
+                    stopRecording();
+                });
+
+                function stopRecording() {
+                    mediaRecorder.stop();
+                    recordButton.disabled = false;
+                    stopButton.disabled = true;
+                }
+            } catch (error) {
+                console.error('Error accessing the webcam:', error);
+            }
         }
+
+        // Call setupCamera on page load
+        window.addEventListener('load', setupCamera);
 
         video.onplay = function() {
             function updateCanvas() {
