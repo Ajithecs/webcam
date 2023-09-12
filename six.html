@@ -3,62 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Video Stream with Text Overlay</title>
+    <title>Webcam Vide oAjith</title>
 </head>
 <body>
     <video id="video" width="240px" height="180px" autoplay></video>
-    <canvas id="canvas" width="240px" height="180px" style="display: none;"></canvas>
-    <button id="startStreamButton">Start Stream</button>
-    <button id="stopStreamButton" disabled>Stop Stream</button>
+    <canvas id="canvas" width="240px" height="180px"style="display:none;"></canvas>
+    <button id="startRecordButton">Start Record</button>
+    <button id="stopRecordButton" disabled>Stop Record</button>
+    <video id="preview" controls style="display: none;"></video>
 
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const startStreamButton = document.getElementById('startStreamButton');
-        const stopStreamButton = document.getElementById('stopStreamButton');
-        let mediaStream;
+        const startRecordButton = document.getElementById('startRecordButton');
+        const stopRecordButton = document.getElementById('stopRecordButton');
+        const previewVideo = document.getElementById('preview');
 
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            startStreamButton.addEventListener('click', () => {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(function(stream) {
-                        mediaStream = stream;
-                        video.srcObject = mediaStream;
+        let mediaRecorder;
+        let chunks = [];
 
-                        startStreamButton.disabled = true;
-                        stopStreamButton.disabled = false;
-                    })
-                    .catch(function(error) {
-                        console.error('Error accessing the webcam:', error);
-                    });
-            });
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(canvas.captureStream());
 
-            stopStreamButton.addEventListener('click', () => {
-                if (mediaStream) {
-                    mediaStream.getTracks().forEach(track => track.stop());
-                    video.srcObject = null;
-                    startStreamButton.disabled = false;
-                    stopStreamButton.disabled = true;
-                }
-            });
+                mediaRecorder.ondataavailable = function (event) {
+                    if (event.data.size > 0) {
+                        chunks.push(event.data);
+                    }
+                };
 
-            video.onplay = function() {
-                function updateCanvas() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                mediaRecorder.onstop = function () {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const videoURL = URL.createObjectURL(blob);
+                    previewVideo.src = videoURL;
+                    previewVideo.style.display = 'block';
 
-                    ctx.font = '20px Arial';
-                    ctx.fillStyle = 'white';
-                    ctx.fillText('Your Text Here', 20, 30); // Adjust the position as needed
-                    requestAnimationFrame(updateCanvas);
-                }
+                    // Convert the recorded video to Base64
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        const base64Data = reader.result.split(',')[1];
+                        console.log('Base64-encoded video:', base64Data);
 
-                updateCanvas();
-            };
-        } else {
-            console.error('Webcam access not supported on this browser');
+                        previewVideo.src = `data:video/mp4;base64,${base64Data}`;
+                    };
+                    reader.readAsDataURL(blob);
+                };
+
+                startRecordButton.addEventListener('click', () => {
+                    mediaRecorder.start();
+                    startRecordButton.disabled = true;
+                    stopRecordButton.disabled = false;
+                });
+
+                stopRecordButton.addEventListener('click', () => {
+                    stopRecording();
+                });
+            } catch (error) {
+                console.error('Error accessing the webcam:', error);
+            }
         }
+
+        initCamera();
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            startRecordButton.disabled = false;
+            stopRecordButton.disabled = true;
+        }
+
+        video.onplay = function () {
+            function updateCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                ctx.font = '20px Arial';
+                ctx.fillStyle = 'white';
+                ctx.fillText('Your Text Here', 20, 30); // Adjust the position as needed
+                requestAnimationFrame(updateCanvas);
+            }
+
+            updateCanvas();
+        };
     </script>
 </body>
 </html>
