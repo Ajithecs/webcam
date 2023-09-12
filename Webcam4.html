@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Video with Text Overlay</title>
+    <title>Webcam Video Ajith</title>
 </head>
 <body>
-    <video id="video" width="240px" height="180px" autoplay style="display:block;"></video>
+    <video id="video" width="240px" height="180px"autoplay></video>
     <canvas id="canvas" width="240px" height="180px"></canvas>
     <button id="recordButton">Record</button>
     <button id="stopButton" disabled>Stop</button>
@@ -40,6 +40,16 @@
                         const videoURL = URL.createObjectURL(blob);
                         previewVideo.src = videoURL;
                         previewVideo.style.display = 'block';
+
+                        // Convert the recorded video to Base64
+                        const reader = new FileReader();
+                        reader.onloadend = function() {
+                            const base64Data = reader.result.split(',')[1];
+                            console.log('Base64-encoded video:', base64Data);
+
+                            previewVideo.src = `data:video/mp4;base64,${base64Data}`;
+                        };
+                        reader.readAsDataURL(blob);
                     };
 
                     recordButton.addEventListener('click', () => {
