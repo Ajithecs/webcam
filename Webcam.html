@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Recording Ajith</title>
+    <title>Video Recording Example</title>
     <!-- Add Bootstrap CSS -->
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -183,10 +183,11 @@
     <!-- Add Bootstrap JavaScript and jQuery (required for some Bootstrap features) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
+    
  <!-- Add RecordRTC for Safari support -->
  <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
  <script src="https://cdn.jsdelivr.net/npm/recordrtc"></script>
+
     <script>
         let stream;
         let mediaRecorder;
@@ -330,6 +331,9 @@
                 recordButton.disabled = true;
                 rerecordBtn.disabled = true; 
                 submitbtn.disabled = true;
+                 // Add this check to handle Safari's prefix
+                  const MediaRecorder = window.MediaRecorder || window.webkitMediaRecorder;
+
                 mediaRecorder = new MediaRecorder(videoCanvas.captureStream());
                 mediaRecorder.start();
                 isRecording = true;
@@ -358,6 +362,9 @@
                 mediaRecorder.onstop = async () => {
                     const videoBlob = new Blob(chunks);
                     previewElement.src = URL.createObjectURL(videoBlob);
+                    
+                    // With this line for Safari compatibility
+                    previewElement.src = webkitURL.createObjectURL(videoBlob);
                     previewElement.loop = true;
                     previewElement.play();
                     chunks = [];
