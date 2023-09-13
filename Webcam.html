@@ -4,18 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Recording Ajith</title>
+    <title>Video Recording Example</title>
     <!-- Add Bootstrap CSS -->
-    
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="font-family.css">
     <style>
-        html, body  {
-    background: #d7dadd;
-    font-family: 'Josefin Sans',Arial,"Microsoft JhengHei","fontawesome",serif;
-    
-}
+        html,
+        body {
+            background: #d7dadd;
+            font-family: 'Josefin Sans', Arial, "Microsoft JhengHei", "fontawesome", serif;
+
+        }
 
 
         #cameraQuality {
@@ -43,6 +44,18 @@
         }
 
         #videoCanvas {
+            border: 1px solid #050202;
+            height: 240px;
+            width: 320px;
+        }
+
+        #videoPlayer {
+            border: 1px solid #050202;
+            height: 240px;
+            width: 320px;
+        }
+
+        #preview {
             border: 1px solid #050202;
             height: 240px;
             width: 320px;
@@ -76,33 +89,75 @@
             font-size: 16px;
         }
 
-        #dateTimeOverlay {
+        #livedatetime {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            font-size: 12px;
             color: white;
-            font-size: 18px;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
+            background-color: #28292870;
+            padding: 0px 0px 0px 215px;
         }
 
+
         .fadeInRight {
-    animation: fadeInRight 1s both;
-  }
+            animation: fadeInRight 1s both;
+        }
 
-  @keyframes fadeInRight {
-    from {
-      opacity: 0;
-      transform: translate3d(100%, 0, 0);
-    }
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translate3d(100%, 0, 0);
+            }
 
-    to {
-      opacity: 1;
-      transform: none;
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* Media query for screens below 360px */
+@media screen and (max-width: 360px) {
+    #videoCanvas,
+    #videoPlayer,
+    #preview{
+        width: 100%; /* Make the elements take the full width of the screen */
+        height: auto; /* Maintain aspect ratio */
     }
+}
+@media (max-width: 390px) {
+  #livedatetime {
+    padding: 0px 0px 0px 186px;
   }
+  
+}
+@media (max-width: 360px) {
+  #livedatetime {
+    padding: 0px 0px 0px 160px;
+  }
+}
+
+@media (max-width: 317px) {
+  #livedatetime {
+    padding: 0px 0px 0px 120px;
+  }
+}
+
+@media (max-width: 280px) {
+  #livedatetime {
+    padding: 0px 0px 0px 82px;
+  }
+}
+@media (max-width: 240px) {
+  #livedatetime {
+    padding: 0px 0px 0px 25px;
+  }
+}
+@media (max-width: 192px) {
+  #livedatetime {
+    padding: 0px 0px 0px 0px;
+  }
+}
+/* ////////////////////////////////////////////////////////////////////////////////// */
+        
     </style>
 </head>
 
@@ -121,20 +176,27 @@
                     <div class="title lg-4">Take a Video</div>
                     <div id="div" class="text-center float-right" style="color: red; font-size: 13px; font-weight: bold;"></div>
                     <div id="timer" class="text-center" style="color: green; font-size: 15px; font-weight: bold; margin-bottom: 20px;padding: 10px 110px 0px 110px;"></div>
-                    <div id="videoCanvasDiv">
+                    <div id="livedatetimediv" class="text-center" style="display: flex!important; justify-content: center;">
+                        <div id="livedatetime"></div>
+                    </div>
+
+                    <div id="videoPlayerdiv" class="text-center" style="display: flex!important;; justify-content: center;">
+                        <video id="videoPlayer" autoplay muted playsinline loop class="mb-2"></video>
+                    </div>
+
+                    <div id="videoCanvasDiv" style="display: none;">
                         <canvas controls autoplay muted playsinline id="videoCanvas" class="mb-2"></canvas>
                     </div>
                     <div id="previewvid" style="display: none;">
                         <video id="preview" class="mb-2" controls autoplay muted playsinline height="auto"></video>
-
                     </div>
                     <div>
-                    <span class="caption">Read the caption shown Below:</span>
-                    <br>
-                    <span id="textMSG">My name is <span style="font-weight:bold;" id="myName">TEST USER</span> and I
-                        want to apply for a DSC through Care4Sign. The code is <span style="font-weight:bold;" id="ranCode"> 123</span></span>
+                        <span class="caption">Read the caption shown Below:</span>
+                        <br>
+                        <span id="textMSG">My name is <span style="font-weight:bold;" id="myName">TEST USER</span> and I
+                            want to apply for a DSC through Care4Sign. The code is <span style="font-weight:bold;" id="ranCode"> 123</span></span>
                     </div>
-                        <div id="buttonsContainer">
+                    <div id="buttonsContainer">
                         <div id="recordBtnDiv">
                             <button id="recordBtn" class="btn btn-primary">Start Recording</button>
                         </div>
@@ -160,12 +222,12 @@
                 <br>
                 <div class="md-card one animate fadeInRight" style="background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; display: none;" id="CaptionAlert">
                     <div class="md-card-content" style="padding: 0px;">
-                      <p style="font-size: 18px; color: #00458b; font-weight: bold;text-align: center;">
-                        <img src="http://localhost:8080/OkycEsignV1/images/alert.gif" style="width: auto; height: 70px;"> Read the caption below video
-                      </p>
+                        <p style="font-size: 18px; color: #00458b; font-weight: bold;text-align: center;">
+                            <img src="http://localhost:8080/OkycEsignV1/images/alert.gif" style="width: auto; height: 70px;"> Read the caption below video
+                        </p>
                     </div>
-                  </div>
-                  
+                </div>
+
             </div>
         </div>
     </div>
@@ -183,10 +245,6 @@
     <!-- Add Bootstrap JavaScript and jQuery (required for some Bootstrap features) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
- <!-- Add RecordRTC for Safari support -->
- <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/recordrtc"></script>
 
     <script>
         let stream;
@@ -212,6 +270,8 @@
         const videoCanvasDiv = document.getElementById('videoCanvasDiv');
         const previewVideoDiv = document.getElementById('previewvid');
         const rersubBtn = document.getElementById('rersubBtn');
+        const videoPlayerdiv = document.getElementById('videoPlayerdiv');
+        const livedatetimediv = document.getElementById('livedatetimediv');
         // Start video stream when the page loads
         document.addEventListener('DOMContentLoaded', startVideoStream);
 
@@ -223,28 +283,29 @@
 
         // Download Base64 as Text File
         downloadBase64Button.addEventListener('click', downloadBase64TextFile);
-        
+
         // Record button click event
         recordBtnDiv.addEventListener('click', reRecordVideo);
 
         // Re-record button click event
         rerecordBtn.addEventListener('click', reRecordVideo);
 
-     // Add a click event listener to the "Start Recording" button
-        recordBtnDiv.addEventListener('click', function () {
-        const captionAlert = document.getElementById('CaptionAlert');
+        // Add a click event listener to the "Start Recording" button
+        recordBtnDiv.addEventListener('click', function() {
+            const captionAlert = document.getElementById('CaptionAlert');
 
-        // Add the fadeInRight class to trigger the animation
-        captionAlert.classList.add('fadeInRight');
+            // Add the fadeInRight class to trigger the animation
+            captionAlert.classList.add('fadeInRight');
 
-       // Show the captionAlert div
-       captionAlert.style.display = 'block';
-      });
-      
+            // Show the captionAlert div
+            captionAlert.style.display = 'block';
+        });
+
 
         // Function to hide the canvas and display the preview video
         function hideCanvasAndShowPreview() {
-            videoCanvasDiv.style.display = 'none';
+            videoPlayerdiv.style.display = 'none';
+            livedatetimediv.style.display = 'none';
             previewVideoDiv.style.display = 'block';
             rersubBtn.style.display = 'block';
             recordBtnDiv.style.display = 'none';
@@ -252,61 +313,66 @@
 
         // Function to show the canvas and hide the preview video
         function showCanvasAndHidePreview() {
-            videoCanvasDiv.style.display = 'block';
+            videoPlayerdiv.style.display = 'block';
+            livedatetimediv.style.display = 'block';
             previewVideoDiv.style.display = 'none';
             rersubBtn.style.display = 'none';
             recordBtnDiv.style.display = 'block';
         }
 
         function startVideoStream() {
-            navigator.mediaDevices.getUserMedia({
+            navigator.mediaDevices
+                .getUserMedia({
                     video: {
-                        facingMode: { exact: "environment" },
+                        facingMode: {
+                            exact: "environment"
+                        },
                         width: 320,
                         height: 240,
                         frameRate: 15,
-                        facingMode: "user"
+                        facingMode: "user",
                     },
-                  audio: true // Request audio permission
+                      audio: true, // Enable audio recording
                 })
                 .then((mediaStream) => {
                     stream = mediaStream;
-                    const ctx = videoCanvas.getContext('2d');
+                    const ctx = videoCanvas.getContext("2d");
                     videoCanvas.width = 320;
                     videoCanvas.height = 240;
 
                     // Play the live video stream on the canvas
-                    const video = document.createElement('video');
+                    const video = document.getElementById("videoPlayer");
                     video.srcObject = mediaStream;
+                    video.style.display = "block";
                     video.onloadedmetadata = () => {
                         video.play();
                         const drawVideoFrame = () => {
-                     // Set the canvas background color to black
-                     ctx.globalAlpha = 0.3;
-                     ctx.fillStyle = "black";
-                     ctx.fillRect(0, 0, videoCanvas.width,22, videoCanvas.height);
-                     // Draw the video on the canvas
-                     ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
+                            // Set the canvas background color to black
+                            ctx.globalAlpha = 0.3;
+                            ctx.fillStyle = "black";
+                            ctx.fillRect(0, -222, videoCanvas.width, videoCanvas.height);
+                            // Draw the video on the canvas
+                            ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
 
-                     // Display date and time on the canvas on the right side
-                     const now = new Date();
-                     const formattedDateTime = formatDate(now);
-                     ctx.globalAlpha = 1;
-                     ctx.fillStyle = 'white';
-                     ctx.font = '12px Arial';
-                     ctx.textAlign = 'right'; // Align text to the right
-                     ctx.fillText(formattedDateTime, videoCanvas.width -8, 20);
+                            // Display date and time on the canvas on the right side
+                            const now = new Date();
+                            const formattedDateTime = formatDate(now);
+                            ctx.globalAlpha = 1;
+                            ctx.fillStyle = "white";
+                            ctx.font = "13px";
+                            ctx.textAlign = "right"; // Align text to the right
+                            ctx.fillText(formattedDateTime, videoCanvas.width - 8, 16);
 
-                      requestAnimationFrame(drawVideoFrame);
-                    };
+                            requestAnimationFrame(drawVideoFrame);
+                        };
                         drawVideoFrame();
                     };
                 })
                 .catch((error) => {
-                    console.error('Error accessing media devices.', error);
+                    console.error("Error accessing media devices.", error);
                 });
             // Update date and time continuously
-           // setInterval(updateDateTime, 1000);
+            // setInterval(updateDateTime, 1000);
         }
 
         function reRecordVideo() {
@@ -319,7 +385,7 @@
 
                 // Reset the record button
                 recordButton.disabled = false;
-                
+
                 // Start recording again
                 showCanvasAndHidePreview();
                 startVideoRecording();
@@ -329,29 +395,28 @@
         function startVideoRecording() {
             if (!isRecording) {
 
+                videoPlayerdiv.style.display = 'flex';
+                livedatetimediv.style.display = 'flex';
                 recordButton.disabled = true;
-                rerecordBtn.disabled = true; 
+                rerecordBtn.disabled = true;
                 submitbtn.disabled = true;
-                 // Add this check to handle Safari's prefix
-                  const MediaRecorder = window.MediaRecorder || window.webkitMediaRecorder;
-
                 mediaRecorder = new MediaRecorder(videoCanvas.captureStream());
                 mediaRecorder.start();
                 isRecording = true;
 
-                let remainingSeconds = 10;
+                let remainingSeconds = 5;
                 countdownInterval = setInterval(() => {
                     remainingSeconds--;
-                     // Format the remaining time in HH:MM:SS format
-                     timerElement.textContent = `Recording Started: Time Remaining: ${formatTime(remainingSeconds)}`;
+                    // Format the remaining time in HH:MM:SS format
+                    timerElement.textContent = `Recording Started: Time Remaining: ${formatTime(remainingSeconds)}`;
 
                     if (remainingSeconds === 0) {
                         clearInterval(countdownInterval);
                         mediaRecorder.stop();
                         isRecording = false;
                         recordBtn.disabled = true; // Disable the Start Recording button
-                        rerecordBtn.disabled = false; 
-                        submitbtn.disabled = false;                    
+                        rerecordBtn.disabled = false;
+                        submitbtn.disabled = false;
                         timerElement.textContent = '';
                     }
                 }, 1000);
@@ -362,10 +427,7 @@
 
                 mediaRecorder.onstop = async () => {
                     const videoBlob = new Blob(chunks);
-                    previewElement.src = URL.createObjectURL(videoBlob);
-                    
-                    // With this line for Safari compatibility
-                    previewElement.src = webkitURL.createObjectURL(videoBlob);
+                    //previewElement.src = URL.createObjectURL(videoBlob);
                     previewElement.loop = true;
                     previewElement.play();
                     chunks = [];
@@ -390,13 +452,13 @@
                 };
             }
         }
-         // Function to format time in HH:MM:SS format
-function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
+        // Function to format time in HH:MM:SS format
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
         // Display video size
         function displayVideoSize(videoBlob, element) {
             const fileSizeMB = (videoBlob.size / 1024 / 1024).toFixed(2);
@@ -463,19 +525,25 @@ function formatTime(seconds) {
             dateTimeElement.textContent = formattedDateTime;
         }
 
-       
+        // Update date and time continuously
+        setInterval(function() {
+            const dateTimeElement = document.getElementById('livedatetime');
+            const now = new Date();
+            const formattedDateTime = formatDate(now);
+            dateTimeElement.textContent = formattedDateTime;
+        }, 1000);
+
         // Function to format date and time
-function formatDate(date) {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-    const year = date.getFullYear();
-    const hr = date.getHours().toString().padStart(2, '0');
-    const mn = date.getMinutes().toString().padStart(2, '0');
-    const sec = date.getSeconds().toString().padStart(2, '0');
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+            const year = date.getFullYear();
+            const hr = date.getHours().toString().padStart(2, '0');
+            const mn = date.getMinutes().toString().padStart(2, '0');
+            const sec = date.getSeconds().toString().padStart(2, '0');
 
-    return day + '/' + month + '/' + year + ' ' + hr + ':' + mn + ':' + sec;
-}
-
+            return day + '/' + month + '/' + year + ' ' + hr + ':' + mn + ':' + sec;
+        }
     </script>
 </body>
 
