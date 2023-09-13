@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Recording Ajith</title>
+    <!-- Add this meta tag for audio permissions -->
+    <meta name="permissions" content="microphone=1">
+    <title>Video Recording Example</title>
     <!-- Add Bootstrap CSS -->
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -325,12 +327,8 @@
     function startVideoStream() {
         navigator.mediaDevices
             .getUserMedia({
-                video: {
-                        width: { ideal: 320 },
-                        height: { ideal: 240 },
-                        facingMode: 'user' // or 'environment' for the rear camera
-                    },
-                    audio: true // Enable audio recording
+                    video: true,
+                    audio: true
             })
             .then((mediaStream) => {
                 stream = mediaStream;
