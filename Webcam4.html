@@ -250,7 +250,6 @@
         let stream;
         let mediaRecorder;
         let chunks = [];
-        let audioChunks = [];
         let isRecording = false;
         let countdownInterval;
         let isCanvasVisible = true;
@@ -333,7 +332,7 @@
                         frameRate: 15,
                         facingMode: "user",
                     },
-                    audio: true, // Enable audio recording
+                      audio: true, // Enable audio recording
                 })
                 .then((mediaStream) => {
                     stream = mediaStream;
@@ -432,7 +431,7 @@
                     previewElement.loop = true;
                     previewElement.play();
                     chunks = [];
-                    audioChunks = [];
+
                     displayVideoSize(videoBlob, previewSizeElement);
 
                     const compressedVideoBlob = await compressVideo(videoBlob);
