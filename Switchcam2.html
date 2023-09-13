@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Recording Example</title>
+    <style>
+      #cameraQuality {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 id="cameraQuality">Camera Quality is: 480x320, 30fps</h2>
+    <video id="video" autoplay controls playsinline width="320" height="240"></video>
+    <button id="recordBtn">Start Recording</button>
+    <div id="timer"></div>
+    <br>
+    <div>
+      <video id="preview" controls autoplay  playsinline width="320" height="240"></video>
+      <div id="previewSize"></div>
+    </div>
+    <br>
+    <div>
+      <div id="compressedSize"></div>
+    </div>
+    <br>
+    <textarea id="compressedBase64Text" cols="50" rows="5" readonly></textarea>
+    <button id="copyBase64Value">Copy Base64 Value</button>
+    <button id="downloadBase64">Download Base64 as Text File</button>
+    <script>
+      let stream;
+      let mediaRecorder;
+      let chunks = [];
+      let isRecording = false;
+      let countdownInterval;
+
+      const videoElement = document.getElementById('video');
+      const recordButton = document.getElementById('recordBtn');
+      const timerElement = document.getElementById('timer');
+      const previewElement = document.getElementById('preview');
+      const previewSizeElement = document.getElementById('previewSize');
+      const compressedSizeElement = document.getElementById('compressedSize');
+      const compressedBase64Text = document.getElementById('compressedBase64Text');
+      const cameraQualityElement = document.getElementById('cameraQuality');
+      const copyBase64Button = document.getElementById('copyBase64Value');
+      const downloadBase64Button = document.getElementById('downloadBase64');
+
+      // Start video recording
+      recordButton.addEventListener('click', startVideoRecording);
+
+      // Copy Base64 Value to Clipboard
+      copyBase64Button.addEventListener('click', copyBase64ToClipboard);
+
+      // Download Base64 as Text File
+      downloadBase64Button.addEventListener('click', downloadBase64TextFile);
+
+      function startVideoRecording() {
+        if (!isRecording) {
+          navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, frameRate: 15 } ,audio:true})
+            .then((mediaStream) => {
+              stream = mediaStream;
+              videoElement.srcObject = mediaStream;
+
+              mediaRecorder = new MediaRecorder(mediaStream);
+              mediaRecorder.start();
+              isRecording = true;
+
+              let remainingSeconds = 10;
+              countdownInterval = setInterval(() => {
+                remainingSeconds--;
+                timerElement.textContent = `Recording... ${remainingSeconds}s`;
+
+                if (remainingSeconds === 0) {
+                  clearInterval(countdownInterval);
+                  mediaRecorder.stop();
+                  isRecording = false;
+                  recordButton.disabled = true;
+                  timerElement.textContent = '';
+                }
+              }, 1000);
+
+              mediaRecorder.ondataavailable = (event) => {
+                chunks.push(event.data);
+              };
+
+              mediaRecorder.onstop = async () => {
+                const videoBlob = new Blob(chunks);
+                previewElement.src = URL.createObjectURL(videoBlob);
+                previewElement.loop = true;
+                previewElement.play();
+                chunks = [];
+
+                displayVideoSize(videoBlob, previewSizeElement);
+
+                const compressedVideoBlob = await compressVideo(videoBlob);
+                displayVideoSize(compressedVideoBlob, compressedSizeElement);
+
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  const base64data = reader.result;
+                  const base64WithoutType = base64data.split(',')[1];
+                  compressedBase64Text.value = base64WithoutType;
+                  console.log('Compressed Video Base64 Value:', base64WithoutType);
+                  
+                  // Set the Base64 video source for preview
+                  previewElement.src = `data:video/mp4;base64,${base64WithoutType}`;
+                };
+                reader.readAsDataURL(compressedVideoBlob);
+              };
+            })
+            .catch((error) => {
+              console.error('Error accessing media devices.', error);
+            });
+        }
+      }
+
+      // Display video size
+      function displayVideoSize(videoBlob, element) {
+        const fileSizeMB = (videoBlob.size / 1024 / 1024).toFixed(2);
+        const fileSizeKB = Math.round(videoBlob.size / 1024);
+        element.textContent = `Video Size: ${fileSizeMB} MB (${fileSizeKB} KB)`;
+      }
+
+      async function compressVideo(videoBlob) {
+        const compressedBlob = await transcodeVideo(videoBlob);
+        return compressedBlob;
+      }
+
+      async function transcodeVideo(videoBlob) {
+        const transcoder = new VideoTranscoder();
+        const options = {
+          quality: 'low',
+        };
+        const compressedBlob = await transcoder.transcode(videoBlob, options);
+        return compressedBlob;
+      }
+
+      class VideoTranscoder {
+        async transcode(videoBlob, options) {
+          // Simulating video transcoding process
+          await sleep(3000); // Simulate processing time
+          return videoBlob;
+        }
+      }
+
+      // Helper function for delaying execution
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Copy the Base64 value to clipboard
+      function copyBase64ToClipboard() {
+        compressedBase64Text.select();
+        document.execCommand('copy');
+        alert('Base64 Value Copied to Clipboard');
+      }
+
+      // Download Base64 as a text file
+      function downloadBase64TextFile() {
+        const base64Data = compressedBase64Text.value;
+        const blob = new Blob([base64Data], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'base64data.txt';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
+    </script>
+  </body>
+</html>
