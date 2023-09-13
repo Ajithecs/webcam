@@ -252,11 +252,13 @@
 <script src="https://vjs.zencdn.net/7.14.3/video.js"></script>
 <script>
     let stream;
-    let mediaRecorder;
-    let chunks = [];
-    let isRecording = false;
-    let countdownInterval;
-    let isCanvasVisible = true;
+        let mediaRecorder;
+        let audioMediaRecorder; // Added for audio recording
+        let chunks = [];
+        let audioChunks = []; // Added for audio recording
+        let isRecording = false;
+        let countdownInterval;
+        let isCanvasVisible = true;
 
     const videoCanvas = document.getElementById('videoCanvas');
     const recordButton = document.getElementById('recordBtn');
@@ -305,6 +307,29 @@
         captionAlert.style.display = 'block';
     });
 
+ // Function to start audio recording
+ function startAudioRecording() {
+            if (!isRecording) {
+                audioMediaRecorder = new MediaRecorder(stream.getAudioTracks()[0]);
+
+                audioMediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                audioMediaRecorder.onstop = () => {
+                    // Handle audio recording completion here, e.g., save audioChunks
+                };
+
+                audioMediaRecorder.start();
+            }
+        }
+
+        // Function to stop audio recording
+        function stopAudioRecording() {
+            if (audioMediaRecorder && audioMediaRecorder.state === 'recording') {
+                audioMediaRecorder.stop();
+            }
+        }
 
     // Function to hide the canvas and display the preview video
     function hideCanvasAndShowPreview() {
@@ -327,8 +352,12 @@
     function startVideoStream() {
         navigator.mediaDevices
             .getUserMedia({
-                    video: true,
-                    audio: true
+                video: {
+                        width: { ideal: 320 },
+                        height: { ideal: 240 },
+                        facingMode: 'user' // or 'environment' for the rear camera
+                    },
+                    audio: true // Enable audio recording
             })
             .then((mediaStream) => {
                 stream = mediaStream;
@@ -399,6 +428,7 @@
             mediaRecorder = new MediaRecorder(videoCanvas.captureStream());
             
             mediaRecorder.start();
+            startAudioRecording();
             isRecording = true;
 
             let remainingSeconds = 5;
@@ -410,6 +440,7 @@
                 if (remainingSeconds === 0) {
                     clearInterval(countdownInterval);
                     mediaRecorder.stop();
+                    stopAudioRecording(); // Stop audio recording
                     isRecording = false;
                     recordBtn.disabled = true; // Disable the Start Recording button
                     rerecordBtn.disabled = false;
