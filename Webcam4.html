@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Recording Ajith</title>
+    <title>Video Recording Example</title>
     <!-- Add Bootstrap CSS -->
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -127,6 +127,7 @@
   #livedatetime {
     padding: 0px 0px 0px 186px;
   }
+  
 }
 @media (max-width: 360px) {
   #livedatetime {
@@ -249,6 +250,7 @@
         let stream;
         let mediaRecorder;
         let chunks = [];
+        let audioChunks = [];
         let isRecording = false;
         let countdownInterval;
         let isCanvasVisible = true;
@@ -331,7 +333,7 @@
                         frameRate: 15,
                         facingMode: "user",
                     },
-                    audio: true,
+                    audio: true, // Enable audio recording
                 })
                 .then((mediaStream) => {
                     stream = mediaStream;
