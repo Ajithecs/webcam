@@ -324,7 +324,7 @@ function showCanvasAndHidePreview() {
 async function startVideoAndAudioStreams() {
     try {
         videoStream = await navigator.mediaDevices.getUserMedia({
-            video: {width: { min: 0, ideal: 320, max: 360 }, height: { min: 0, ideal: 260, max: 300 },frameRate: { ideal: 15 }, facingMode: {ideal:'user'},codec: 'vp9.0',bitrate: 200000,},
+            video: {width: { min: 0, ideal: 240, max: 360 }, height: { min: 0, ideal: 240, max: 300 },frameRate: { ideal: 15 }, facingMode: {ideal:'user'},codec: 'vp9.0',bitrate: 200000,},
         });
 
         audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
