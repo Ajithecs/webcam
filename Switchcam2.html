@@ -113,19 +113,19 @@
                 transform: none;
             }
         }
-        @media screen and (max-width: 360px) {
-
-
-#videoPlayer{
-    width: 400px;
-    height: 240px;
-    
-}
+        @media screen and (max-width: 400px) {
+            #videoPlayer {
+                border: 1px solid #050202;
+            height: 240px;
+            width: 360px;
+  }
+  
 }
         /* Media query for screens below 360px */
         @media screen and (max-width: 360px) {
 
             #videoCanvas,
+            
             #preview {
                 width: 100%;
                 /* Make the elements take the full width of the screen */
@@ -338,7 +338,15 @@
         async function startVideoAndAudioStreams() {
             try {
                 videoStream = await navigator.mediaDevices.getUserMedia({
-                    video: {width: { min: 0, ideal: 320, max: 360 }, height: { min: 0, ideal: 240, max: 300 },frameRate: { ideal: 15 }, facingMode: {ideal:'user'},codec: 'vp9.0',bitrate: 200000,},
+                    video: {
+                        facingMode: {
+                            exact: "environment"
+                        },
+                        width: 320,
+                        height: 240,
+                        frameRate: 15,
+                        facingMode: "user",
+                    },
                 });
 
                 audioStream = await navigator.mediaDevices.getUserMedia({
