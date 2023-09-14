@@ -52,7 +52,7 @@
         #videoPlayer {
             border: 1px solid #050202;
             height: 240px;
-            width: 360px;
+            width: 320px;
         }
 
         #preview {
@@ -113,51 +113,66 @@
                 transform: none;
             }
         }
+        @media screen and (max-width: 360px) {
 
+
+#videoPlayer{
+    width: 400px;
+    height: 240px;
+    
+}
+}
         /* Media query for screens below 360px */
-@media screen and (max-width: 360px) {
-    #videoCanvas,
-    #videoPlayer,
-    #preview{
-        width: 100%; /* Make the elements take the full width of the screen */
-        height: auto; /* Maintain aspect ratio */
-    }
-}
-@media (max-width: 390px) {
-  #livedatetime {
-    padding: 0px 0px 0px 186px;
-  }
-  
-}
-@media (max-width: 360px) {
-  #livedatetime {
-    padding: 0px 0px 0px 160px;
-  }
-}
+        @media screen and (max-width: 360px) {
 
-@media (max-width: 317px) {
-  #livedatetime {
-    padding: 0px 0px 0px 120px;
-  }
-}
+            #videoCanvas,
+            #videoPlayer,
+            #preview {
+                width: 100%;
+                /* Make the elements take the full width of the screen */
+                height: auto;
+                /* Maintain aspect ratio */
+            }
+        }
 
-@media (max-width: 280px) {
-  #livedatetime {
-    padding: 0px 0px 0px 82px;
-  }
-}
-@media (max-width: 240px) {
-  #livedatetime {
-    padding: 0px 0px 0px 25px;
-  }
-}
-@media (max-width: 192px) {
-  #livedatetime {
-    padding: 0px 0px 0px 0px;
-  }
-}
-/* ////////////////////////////////////////////////////////////////////////////////// */
-        
+        @media (max-width: 390px) {
+            #livedatetime {
+                padding: 0px 0px 0px 186px;
+            }
+
+        }
+
+        @media (max-width: 360px) {
+            #livedatetime {
+                padding: 0px 0px 0px 160px;
+            }
+        }
+
+        @media (max-width: 317px) {
+            #livedatetime {
+                padding: 0px 0px 0px 120px;
+            }
+        }
+
+        @media (max-width: 280px) {
+            #livedatetime {
+                padding: 0px 0px 0px 82px;
+            }
+        }
+
+        @media (max-width: 240px) {
+            #livedatetime {
+                padding: 0px 0px 0px 25px;
+            }
+        }
+
+        @media (max-width: 192px) {
+            #livedatetime {
+                padding: 0px 0px 0px 0px;
+            }
+        }
+
+        /* ////////////////////////////////////////////////////////////////////////////////// */
     </style>
 </head>
 
@@ -247,298 +262,299 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
-  let videoStream;
-let audioStream;
-let mediaRecorder;
-let chunks = [];
-let isRecording = false;
-let countdownInterval;
-let isCanvasVisible = true;
+        let videoStream;
+        let audioStream;
+        let mediaRecorder;
+        let chunks = [];
+        let isRecording = false;
+        let countdownInterval;
+        let isCanvasVisible = true;
 
-const videoCanvas = document.getElementById('videoCanvas');
-const recordButton = document.getElementById('recordBtn');
-const rerecordBtn = document.getElementById('rerecordBtn');
-const submitbtn = document.getElementById('submitbtn');
-const timerElement = document.getElementById('timer');
-const previewElement = document.getElementById('preview');
-const previewSizeElement = document.getElementById('previewSize');
-const compressedSizeElement = document.getElementById('compressedSize');
-const compressedBase64Text = document.getElementById('compressedBase64Text');
-const cameraQualityElement = document.getElementById('cameraQuality');
-const copyBase64Button = document.getElementById('copyBase64Value');
-const downloadBase64Button = document.getElementById('downloadBase64');
-const recordBtnDiv = document.getElementById('recordBtnDiv');
-const videoCanvasDiv = document.getElementById('videoCanvasDiv');
-const previewVideoDiv = document.getElementById('previewvid');
-const rersubBtn = document.getElementById('rersubBtn');
-const videoPlayerdiv = document.getElementById('videoPlayerdiv');
-const livedatetimediv = document.getElementById('livedatetimediv');
+        const videoCanvas = document.getElementById('videoCanvas');
+        const recordButton = document.getElementById('recordBtn');
+        const rerecordBtn = document.getElementById('rerecordBtn');
+        const submitbtn = document.getElementById('submitbtn');
+        const timerElement = document.getElementById('timer');
+        const previewElement = document.getElementById('preview');
+        const previewSizeElement = document.getElementById('previewSize');
+        const compressedSizeElement = document.getElementById('compressedSize');
+        const compressedBase64Text = document.getElementById('compressedBase64Text');
+        const cameraQualityElement = document.getElementById('cameraQuality');
+        const copyBase64Button = document.getElementById('copyBase64Value');
+        const downloadBase64Button = document.getElementById('downloadBase64');
+        const recordBtnDiv = document.getElementById('recordBtnDiv');
+        const videoCanvasDiv = document.getElementById('videoCanvasDiv');
+        const previewVideoDiv = document.getElementById('previewvid');
+        const rersubBtn = document.getElementById('rersubBtn');
+        const videoPlayerdiv = document.getElementById('videoPlayerdiv');
+        const livedatetimediv = document.getElementById('livedatetimediv');
 
-// Start video and audio streams when the page loads
-document.addEventListener('DOMContentLoaded', startVideoAndAudioStreams);
+        // Start video and audio streams when the page loads
+        document.addEventListener('DOMContentLoaded', startVideoAndAudioStreams);
 
-// Start video recording
-rersubBtn.addEventListener('click', startVideoRecording);
+        // Start video recording
+        rersubBtn.addEventListener('click', startVideoRecording);
 
-// Copy Base64 Value to Clipboard
-copyBase64Button.addEventListener('click', copyBase64ToClipboard);
+        // Copy Base64 Value to Clipboard
+        copyBase64Button.addEventListener('click', copyBase64ToClipboard);
 
-// Download Base64 as Text File
-downloadBase64Button.addEventListener('click', downloadBase64TextFile);
+        // Download Base64 as Text File
+        downloadBase64Button.addEventListener('click', downloadBase64TextFile);
 
-// Record button click event
-recordBtnDiv.addEventListener('click', reRecordVideo);
+        // Record button click event
+        recordBtnDiv.addEventListener('click', reRecordVideo);
 
-// Re-record button click event
-rerecordBtn.addEventListener('click', reRecordVideo);
+        // Re-record button click event
+        rerecordBtn.addEventListener('click', reRecordVideo);
 
-// Add a click event listener to the "Start Recording" button
-recordBtnDiv.addEventListener('click', function () {
-    const captionAlert = document.getElementById('CaptionAlert');
+        // Add a click event listener to the "Start Recording" button
+        recordBtnDiv.addEventListener('click', function() {
+            const captionAlert = document.getElementById('CaptionAlert');
 
-    // Add the fadeInRight class to trigger the animation
-    captionAlert.classList.add('fadeInRight');
+            // Add the fadeInRight class to trigger the animation
+            captionAlert.classList.add('fadeInRight');
 
-    // Show the captionAlert div
-    captionAlert.style.display = 'block';
-});
-
-// Function to hide the canvas and display the preview video
-function hideCanvasAndShowPreview() {
-    videoPlayerdiv.style.display = 'none';
-    livedatetimediv.style.display = 'none';
-    previewVideoDiv.style.display = 'block';
-    rersubBtn.style.display = 'block';
-    recordBtnDiv.style.display = 'none';
-}
-
-// Function to show the canvas and hide the preview video
-function showCanvasAndHidePreview() {
-    videoPlayerdiv.style.display = 'block';
-    livedatetimediv.style.display = 'block';
-    previewVideoDiv.style.display = 'none';
-    rersubBtn.style.display = 'none';
-    recordBtnDiv.style.display = 'block';
-}
-
-async function startVideoAndAudioStreams() {
-    try {
-        videoStream = await navigator.mediaDevices.getUserMedia({
-            video: {width: { min: 0, ideal: 320, max: 360 }, height: { min: 0, ideal: 240, max: 300 },frameRate: { ideal: 15 }, facingMode: {ideal:'user'},codec: 'vp9.0',bitrate: 200000,},
+            // Show the captionAlert div
+            captionAlert.style.display = 'block';
         });
 
-        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Function to hide the canvas and display the preview video
+        function hideCanvasAndShowPreview() {
+            videoPlayerdiv.style.display = 'none';
+            livedatetimediv.style.display = 'none';
+            previewVideoDiv.style.display = 'block';
+            rersubBtn.style.display = 'block';
+            recordBtnDiv.style.display = 'none';
+        }
 
-        const combinedStream = new MediaStream([...videoCanvas.captureStream().getTracks(), ...audioStream.getTracks()]);
-        mediaRecorder = new MediaRecorder(combinedStream);
+        // Function to show the canvas and hide the preview video
+        function showCanvasAndHidePreview() {
+            videoPlayerdiv.style.display = 'block';
+            livedatetimediv.style.display = 'block';
+            previewVideoDiv.style.display = 'none';
+            rersubBtn.style.display = 'none';
+            recordBtnDiv.style.display = 'block';
+        }
 
-        const ctx = videoCanvas.getContext("2d");
-        videoCanvas.width = 320;    
-        videoCanvas.height = 240;
+        async function startVideoAndAudioStreams() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: {width: { min: 0, ideal: 320, max: 360 }, height: { min: 0, ideal: 240, max: 300 },frameRate: { ideal: 15 }, facingMode: {ideal:'user'},codec: 'vp9.0',bitrate: 200000,},
+                });
 
-        // Play the live video stream on the canvas
-        const video = document.getElementById("videoPlayer");
-        video.srcObject = videoStream;
-        video.style.display = "block";
-        video.onloadedmetadata = () => {
-            video.play();
-            const drawVideoFrame = () => {
-                // Set the canvas background color to black
-                ctx.globalAlpha = 0.3;
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, -222, videoCanvas.width, videoCanvas.height);
-                // Draw the video on the canvas
-                ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
+                audioStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
 
-                // Display date and time on the canvas on the right side
-                const now = new Date();
-                const formattedDateTime = formatDate(now);
-                ctx.globalAlpha = 1;
-                ctx.fillStyle = "white";
-                ctx.font = "13px";
-                ctx.textAlign = "right"; // Align text to the right
-                ctx.fillText(formattedDateTime, videoCanvas.width - 8, 16);
+                const combinedStream = new MediaStream([...videoCanvas.captureStream().getTracks(), ...audioStream.getTracks()]);
+                mediaRecorder = new MediaRecorder(combinedStream);
 
-                requestAnimationFrame(drawVideoFrame);
-            };
-            drawVideoFrame();
-        };
-    } catch (error) {
-        console.error("Error accessing media devices.", error);
-    }
-}
+                const ctx = videoCanvas.getContext("2d");
+                videoCanvas.width = 320;
+                videoCanvas.height = 240;
 
-function reRecordVideo() {
-    if (!isRecording) {
-        // Clear the previous preview and compressed video
-        previewElement.src = '';
-        previewSizeElement.textContent = '';
-        compressedSizeElement.textContent = '';
-        compressedBase64Text.value = '';
+                // Play the live video stream on the canvas
+                const video = document.getElementById("videoPlayer");
+                video.srcObject = videoStream;
+                video.style.display = "block";
+                video.onloadedmetadata = () => {
+                    video.play();
+                    const drawVideoFrame = () => {
+                        // Set the canvas background color to black
+                        ctx.globalAlpha = 0.3;
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(0, -222, videoCanvas.width, videoCanvas.height);
+                        // Draw the video on the canvas
+                        ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
 
-        // Reset the record button
-        recordButton.disabled = false;
+                        // Display date and time on the canvas on the right side
+                        const now = new Date();
+                        const formattedDateTime = formatDate(now);
+                        ctx.globalAlpha = 1;
+                        ctx.fillStyle = "white";
+                        ctx.font = "13px";
+                        ctx.textAlign = "right"; // Align text to the right
+                        ctx.fillText(formattedDateTime, videoCanvas.width - 8, 16);
 
-        // Start recording again
-        showCanvasAndHidePreview();
-        startVideoRecording();
-    }
-}
-
-function startVideoRecording() {
-    if (!isRecording) {
-        videoPlayerdiv.style.display = 'flex';
-        livedatetimediv.style.display = 'flex';
-        recordButton.disabled = true;
-        rerecordBtn.disabled = true;
-        submitbtn.disabled = true;
-        mediaRecorder.start();
-        isRecording = true;
-
-        let remainingSeconds = 5;
-        countdownInterval = setInterval(() => {
-            remainingSeconds--;
-            // Format the remaining time in HH:MM:SS format
-            timerElement.textContent = `Recording Started: Time Remaining: ${formatTime(remainingSeconds)}`;
-
-            if (remainingSeconds === 0) {
-                clearInterval(countdownInterval);
-                mediaRecorder.stop();
-                isRecording = false;
-                recordBtn.disabled = true; // Disable the Start Recording button
-                rerecordBtn.disabled = false;
-                submitbtn.disabled = false;
-                timerElement.textContent = '';
+                        requestAnimationFrame(drawVideoFrame);
+                    };
+                    drawVideoFrame();
+                };
+            } catch (error) {
+                console.error("Error accessing media devices.", error);
             }
+        }
+
+        function reRecordVideo() {
+            if (!isRecording) {
+                // Clear the previous preview and compressed video
+                previewElement.src = '';
+                previewSizeElement.textContent = '';
+                compressedSizeElement.textContent = '';
+                compressedBase64Text.value = '';
+
+                // Reset the record button
+                recordButton.disabled = false;
+
+                // Start recording again
+                showCanvasAndHidePreview();
+                startVideoRecording();
+            }
+        }
+
+        function startVideoRecording() {
+            if (!isRecording) {
+                videoPlayerdiv.style.display = 'flex';
+                livedatetimediv.style.display = 'flex';
+                recordButton.disabled = true;
+                rerecordBtn.disabled = true;
+                submitbtn.disabled = true;
+                mediaRecorder.start();
+                isRecording = true;
+
+                let remainingSeconds = 5;
+                countdownInterval = setInterval(() => {
+                    remainingSeconds--;
+                    // Format the remaining time in HH:MM:SS format
+                    timerElement.textContent = `Recording Started: Time Remaining: ${formatTime(remainingSeconds)}`;
+
+                    if (remainingSeconds === 0) {
+                        clearInterval(countdownInterval);
+                        mediaRecorder.stop();
+                        isRecording = false;
+                        recordBtn.disabled = true; // Disable the Start Recording button
+                        rerecordBtn.disabled = false;
+                        submitbtn.disabled = false;
+                        timerElement.textContent = '';
+                    }
+                }, 1000);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    chunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const videoBlob = new Blob(chunks);
+                    previewElement.src = URL.createObjectURL(videoBlob);
+                    previewElement.loop = true;
+                    previewElement.play();
+                    chunks = [];
+
+                    displayVideoSize(videoBlob, previewSizeElement);
+
+                    const compressedVideoBlob = await compressVideo(videoBlob);
+                    displayVideoSize(compressedVideoBlob, compressedSizeElement);
+
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64data = reader.result;
+                        const base64WithoutType = base64data.split(',')[1];
+                        compressedBase64Text.value = base64WithoutType;
+                        console.log('Compressed Video Base64 Value:', base64WithoutType);
+
+                        // Set the Base64 video source for preview
+                        previewElement.src = `data:video/mp4;base64,${base64WithoutType}`;
+                    };
+                    reader.readAsDataURL(compressedVideoBlob);
+                    hideCanvasAndShowPreview();
+                };
+            }
+        }
+
+
+        // Function to format time in HH:MM:SS format
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Display video size
+        function displayVideoSize(videoBlob, element) {
+            const fileSizeMB = (videoBlob.size / 1024 / 1024).toFixed(2);
+            const fileSizeKB = Math.round(videoBlob.size / 1024);
+            element.textContent = `Video Size: ${fileSizeMB} MB (${fileSizeKB} KB)`;
+        }
+
+        async function compressVideo(videoBlob) {
+            const compressedBlob = await transcodeVideo(videoBlob);
+            return compressedBlob;
+        }
+
+        async function transcodeVideo(videoBlob) {
+            const transcoder = new VideoTranscoder();
+            const options = {
+                quality: 'low',
+            };
+            const compressedBlob = await transcoder.transcode(videoBlob, options);
+            return compressedBlob;
+        }
+
+        class VideoTranscoder {
+            async transcode(videoBlob, options) {
+                // Simulating video transcoding process
+                await sleep(3000); // Simulate processing time
+                return videoBlob;
+            }
+        }
+
+        // Helper function for delaying execution
+        function sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        // Copy the Base64 value to clipboard
+        function copyBase64ToClipboard() {
+            compressedBase64Text.select();
+            document.execCommand('copy');
+            alert('Base64 Value Copied to Clipboard');
+        }
+
+        // Download Base64 as a text file
+        function downloadBase64TextFile() {
+            const base64Data = compressedBase64Text.value;
+            const blob = new Blob([base64Data], {
+                type: 'text/plain'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'base64data.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // Function to update the date and time
+        function updateDateTime() {
+            const dateTimeElement = document.getElementById('dateTime');
+            const now = new Date();
+            const formattedDateTime = formatDate(now);
+            dateTimeElement.textContent = formattedDateTime;
+        }
+
+        // Update date and time continuously
+        setInterval(function() {
+            const dateTimeElement = document.getElementById('livedatetime');
+            const now = new Date();
+            const formattedDateTime = formatDate(now);
+            dateTimeElement.textContent = formattedDateTime;
         }, 1000);
 
-        mediaRecorder.ondataavailable = (event) => {
-            chunks.push(event.data);
-        };
+        // Function to format date and time
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+            const year = date.getFullYear();
+            const hr = date.getHours().toString().padStart(2, '0');
+            const mn = date.getMinutes().toString().padStart(2, '0');
+            const sec = date.getSeconds().toString().padStart(2, '0');
 
-        mediaRecorder.onstop = async () => {
-            const videoBlob = new Blob(chunks);
-            previewElement.src = URL.createObjectURL(videoBlob);
-            previewElement.loop = true;
-            previewElement.play();
-            chunks = [];
-
-            displayVideoSize(videoBlob, previewSizeElement);
-
-            const compressedVideoBlob = await compressVideo(videoBlob);
-            displayVideoSize(compressedVideoBlob, compressedSizeElement);
-
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64data = reader.result;
-                const base64WithoutType = base64data.split(',')[1];
-                compressedBase64Text.value = base64WithoutType;
-                console.log('Compressed Video Base64 Value:', base64WithoutType);
-
-                // Set the Base64 video source for preview
-                previewElement.src = `data:video/mp4;base64,${base64WithoutType}`;
-            };
-            reader.readAsDataURL(compressedVideoBlob);
-            hideCanvasAndShowPreview();
-        };
-    }
-}
-
-
-// Function to format time in HH:MM:SS format
-function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-// Display video size
-function displayVideoSize(videoBlob, element) {
-    const fileSizeMB = (videoBlob.size / 1024 / 1024).toFixed(2);
-    const fileSizeKB = Math.round(videoBlob.size / 1024);
-    element.textContent = `Video Size: ${fileSizeMB} MB (${fileSizeKB} KB)`;
-}
-
-async function compressVideo(videoBlob) {
-    const compressedBlob = await transcodeVideo(videoBlob);
-    return compressedBlob;
-}
-
-async function transcodeVideo(videoBlob) {
-    const transcoder = new VideoTranscoder();
-    const options = {
-        quality: 'low',
-    };
-    const compressedBlob = await transcoder.transcode(videoBlob, options);
-    return compressedBlob;
-}
-
-class VideoTranscoder {
-    async transcode(videoBlob, options) {
-        // Simulating video transcoding process
-        await sleep(3000); // Simulate processing time
-        return videoBlob;
-    }
-}
-
-// Helper function for delaying execution
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Copy the Base64 value to clipboard
-function copyBase64ToClipboard() {
-    compressedBase64Text.select();
-    document.execCommand('copy');
-    alert('Base64 Value Copied to Clipboard');
-}
-
-// Download Base64 as a text file
-function downloadBase64TextFile() {
-    const base64Data = compressedBase64Text.value;
-    const blob = new Blob([base64Data], {
-        type: 'text/plain'
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'base64data.txt';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-}
-
-// Function to update the date and time
-function updateDateTime() {
-    const dateTimeElement = document.getElementById('dateTime');
-    const now = new Date();
-    const formattedDateTime = formatDate(now);
-    dateTimeElement.textContent = formattedDateTime;
-}
-
-// Update date and time continuously
-setInterval(function () {
-    const dateTimeElement = document.getElementById('livedatetime');
-    const now = new Date();
-    const formattedDateTime = formatDate(now);
-    dateTimeElement.textContent = formattedDateTime;
-}, 1000);
-
-// Function to format date and time
-function formatDate(date) {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-    const year = date.getFullYear();
-    const hr = date.getHours().toString().padStart(2, '0');
-    const mn = date.getMinutes().toString().padStart(2, '0');
-    const sec = date.getSeconds().toString().padStart(2, '0');
-
-    return day + '/' + month + '/' + year + ' ' + hr + ':' + mn + ':' + sec;
-}
-
+            return day + '/' + month + '/' + year + ' ' + hr + ':' + mn + ':' + sec;
+        }
     </script>
 </body>
 
