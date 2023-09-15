@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Recording Example</title>
+    <title>Video Recording Ajith</title>
     <!-- Add Bootstrap CSS -->
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -54,7 +54,7 @@
         }
 
         #preview {
-            border: 1px solid #050202; 
+            border: 1px solid #050202;
             height: 240px;
             width: 320px;
         }
@@ -92,7 +92,8 @@
             font-size: 12px;
             color: white;
             background-color: #28292870;
-            padding: 0px 0px 0px 215px;
+                text-align: end;
+    width: 320px;
         }
 
 
@@ -111,18 +112,11 @@
                 transform: none;
             }
         }
- @media screen and (max-width: 360px) {
 
-            #livedatetime {
-                padding: auto;
-            }
-        }
-        
-/* Media query for screens below 360px */
+        /* Media query for screens below 360px */
         @media screen and (max-width: 360px) {
 
             #videoCanvas,
-            
             #preview {
                 width: 100%;
                 /* Make the elements take the full width of the screen */
@@ -131,45 +125,86 @@
             }
         }
 
-        /*@media (max-width: 390px) {
+       @media (max-width: 400px) {
             #livedatetime {
-                padding: 0px 0px 0px 142px;
-            }
+            position: absolute;
+            font-size: 12px;
+            color: white;
+            background-color: #28292870;
+                text-align: end;
+    width: 240px;
+        }
 
         }
 
-        @media (max-width: 360px) {
+       /*
+         @media (max-width: 980px) {
             #livedatetime {
-                padding: 0px 0px 0px 140px;
-            }
+            position: absolute;
+            font-size: 12px;
+            color: white;
+            background-color: #28292870;
+                text-align: end;
+    width: 200px;
         }
 
-        @media (max-width: 330px) {
-            #livedatetime {
-                padding: 0px 0px 0px 130px;
-            }
+        }
+        @media (max-width: 370px) {
+        #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(231, 12, 12);
+            background-color: #28292870;
+                text-align: end;
+    width: 200px;
+        }
+        }
+
+         @media (max-width: 317px) {
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(60, 226, 18);
+            background-color: #28292870;
+                text-align: end;
+    width: 180px;
+        }
         }
 
         @media (max-width: 280px) {
-            #livedatetime {
-                padding: 0px 0px 0px 62px;
-            }
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(199, 238, 24);
+            background-color: #28292870;
+                text-align: end;
+    width: 140px;
+        }
         }
 
         @media (max-width: 240px) {
-            #livedatetime {
-                padding: 0px 0px 0px 15px;
-            }
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(96, 11, 253);
+            background-color: #28292870;
+                text-align: end;
+    width: 100px;
+        }
         }
 
         @media (max-width: 192px) {
-            #livedatetime {
-                padding: 0px 0px 0px 0px;
-            }
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(9, 221, 236);
+            background-color: #28292870;
+                text-align: end;
+    width: 80px;
+        }
         }
 
-
-         ////////////////////////////////////////////////////////////////////////////////// */
+       ////////////////////////////////////////////////////////////////////////////////// */
     </style>
 </head>
 
@@ -351,9 +386,10 @@
                 audioStream = await navigator.mediaDevices.getUserMedia({
                     audio: true
                 });
-
+              //In Canvas Tag Stream Rec
                const combinedStream = new MediaStream([...videoCanvas.captureStream().getTracks(), ...audioStream.getTracks()]);
-                //const combinedStream = new MediaStream([...videoStream.getTracks(), ...audioStream.getTracks()]);
+                //In Video Tag Stream Rec
+               //const combinedStream = new MediaStream([...videoStream.getTracks(), ...audioStream.getTracks()]);
 
                 mediaRecorder = new MediaRecorder(combinedStream,);
 
@@ -420,7 +456,7 @@
                 mediaRecorder.start();
                 isRecording = true;
 
-                let remainingSeconds = 5;
+                let remainingSeconds = 50;
                 countdownInterval = setInterval(() => {
                     remainingSeconds--;
                     // Format the remaining time in HH:MM:SS format
