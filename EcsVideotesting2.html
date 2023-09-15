@@ -335,7 +335,7 @@
                         facingMode: {
                             exact: "environment"
                         },
-                        width: 320,
+                        width: 360,
                         height: 240,
                         frameRate: 15,
                         facingMode: "user",
@@ -353,7 +353,7 @@
                 mediaRecorder = new MediaRecorder(combinedStream,);
 
                 const ctx = videoCanvas.getContext("2d");
-                videoCanvas.width = 360;
+                videoCanvas.width = 320;
                 videoCanvas.height = 240;
 
                 // Play the live video stream on the canvas
