@@ -45,6 +45,8 @@
 
         #videoCanvas {
             border: 1px solid #050202;
+            height: 240px;
+            width: 320px;
         }
 
         #videoPlayer {
@@ -52,7 +54,9 @@
         }
 
         #preview {
-            border: 1px solid #050202;            
+            border: 1px solid #050202; 
+            height: 240px;
+            width: 320px;
         }
 
         #buttonsContainer {
@@ -109,8 +113,20 @@
         }
 
         
+/* Media query for screens below 360px */
+        @media screen and (max-width: 360px) {
 
-       @media (max-width: 390px) {
+            #videoCanvas,
+            
+            #preview {
+                width: 100%;
+                /* Make the elements take the full width of the screen */
+                height: auto;
+                /* Maintain aspect ratio */
+            }
+        }
+
+        @media (max-width: 390px) {
             #livedatetime {
                 padding: 0px 0px 0px 142px;
             }
@@ -146,6 +162,7 @@
                 padding: 0px 0px 0px 0px;
             }
         }
+
 
         /* ////////////////////////////////////////////////////////////////////////////////// */
     </style>
