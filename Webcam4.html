@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Recording Example</title>
+    <title>Video Recording Ajith</title>
     <!-- Add Bootstrap CSS -->
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -51,8 +52,6 @@
 
         #videoPlayer {
             border: 1px solid #050202;
-            height: 240px;
-            width: 320px;
         }
 
         #preview {
@@ -94,7 +93,8 @@
             font-size: 12px;
             color: white;
             background-color: #28292870;
-            padding: 0px 0px 0px 215px;
+                text-align: end;
+    width: 320px;
         }
 
 
@@ -115,49 +115,97 @@
         }
 
         /* Media query for screens below 360px */
-@media screen and (max-width: 360px) {
-    #videoCanvas,
-    #videoPlayer,
-    #preview{
-        width: 100%; /* Make the elements take the full width of the screen */
-        height: auto; /* Maintain aspect ratio */
-    }
-}
-@media (max-width: 390px) {
-  #livedatetime {
-    padding: 0px 0px 0px 186px;
-  }
-  
-}
-@media (max-width: 360px) {
-  #livedatetime {
-    padding: 0px 0px 0px 160px;
-  }
-}
+        @media screen and (max-width: 360px) {
 
-@media (max-width: 317px) {
-  #livedatetime {
-    padding: 0px 0px 0px 120px;
-  }
-}
+            #videoCanvas,
+            #preview {
+                width: 100%;
+                /* Make the elements take the full width of the screen */
+                height: auto;
+                /* Maintain aspect ratio */
+            }
+        }
 
-@media (max-width: 280px) {
-  #livedatetime {
-    padding: 0px 0px 0px 82px;
-  }
-}
-@media (max-width: 240px) {
-  #livedatetime {
-    padding: 0px 0px 0px 25px;
-  }
-}
-@media (max-width: 192px) {
-  #livedatetime {
-    padding: 0px 0px 0px 0px;
-  }
-}
-/* ////////////////////////////////////////////////////////////////////////////////// */
-        
+       @media (max-width: 400px) {
+            #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: white;
+            background-color: #28292870;
+            text-align: end;
+            width: 320px;
+        }
+
+        }
+
+       /*
+         @media (max-width: 980px) {
+            #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: white;
+            background-color: #28292870;
+                text-align: end;
+    width: 200px;
+        }
+
+        }
+        @media (max-width: 370px) {
+        #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(231, 12, 12);
+            background-color: #28292870;
+                text-align: end;
+    width: 200px;
+        }
+        }
+
+         @media (max-width: 317px) {
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(60, 226, 18);
+            background-color: #28292870;
+                text-align: end;
+    width: 180px;
+        }
+        }
+
+        @media (max-width: 280px) {
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(199, 238, 24);
+            background-color: #28292870;
+                text-align: end;
+    width: 140px;
+        }
+        }
+
+        @media (max-width: 240px) {
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(96, 11, 253);
+            background-color: #28292870;
+                text-align: end;
+    width: 100px;
+        }
+        }
+
+        @media (max-width: 192px) {
+          #livedatetime {
+            position: absolute;
+            font-size: 12px;
+            color: rgb(9, 221, 236);
+            background-color: #28292870;
+                text-align: end;
+    width: 80px;
+        }
+        }
+
+       ////////////////////////////////////////////////////////////////////////////////// */
     </style>
 </head>
 
@@ -165,7 +213,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="#">
-            <img src="http://localhost:8080/OkycEsignV1/assets/img/ecsLogoIndex.jpg" width="100" height="40" class="d-inline-block align-top" alt="">
+            <img src="unnamed.png" width="100" height="40" class="d-inline-block align-top" alt="">
         </a>
     </nav>
 
@@ -223,7 +271,7 @@
                 <div class="md-card one animate fadeInRight" style="background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; display: none;" id="CaptionAlert">
                     <div class="md-card-content" style="padding: 0px;">
                         <p style="font-size: 18px; color: #00458b; font-weight: bold;text-align: center;">
-                            <img src="http://localhost:8080/OkycEsignV1/images/alert.gif" style="width: auto; height: 70px;"> Read the caption below video
+                            <img src="alert.gif" style="width: auto; height: 70px;"> Read the caption below video
                         </p>
                     </div>
                 </div>
@@ -236,9 +284,9 @@
         <div id="previewSize"></div>
         <div id="compressedSize"></div>
         <br>
-        <textarea id="compressedBase64Text" class="form-control" rows="5" readonly></textarea>
-        <button id="copyBase64Value" class="btn btn-info mt-2">Copy Base64 Value</button>
-        <button id="downloadBase64" class="btn btn-success mt-2">Download Base64 as Text File</button>
+        <textarea id="compressedBase64Text" style="display: none;" class="form-control" rows="5" readonly></textarea>
+        <button id="copyBase64Value" style="display: none;" class="btn btn-info mt-2">Copy Base64 Value</button>
+        <button id="downloadBase64" style="display: none;" class="btn btn-success mt-2">Download Base64 as Text File</button>
     </div>
 
 
@@ -247,7 +295,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
-        let stream;
+        let videoStream;
+        let audioStream;
         let mediaRecorder;
         let chunks = [];
         let isRecording = false;
@@ -272,8 +321,9 @@
         const rersubBtn = document.getElementById('rersubBtn');
         const videoPlayerdiv = document.getElementById('videoPlayerdiv');
         const livedatetimediv = document.getElementById('livedatetimediv');
-        // Start video stream when the page loads
-        document.addEventListener('DOMContentLoaded', startVideoStream);
+
+        // Start video and audio streams when the page loads
+        document.addEventListener('DOMContentLoaded', startVideoAndAudioStreams);
 
         // Start video recording
         rersubBtn.addEventListener('click', startVideoRecording);
@@ -301,7 +351,6 @@
             captionAlert.style.display = 'block';
         });
 
-
         // Function to hide the canvas and display the preview video
         function hideCanvasAndShowPreview() {
             videoPlayerdiv.style.display = 'none';
@@ -320,9 +369,9 @@
             recordBtnDiv.style.display = 'block';
         }
 
-        function startVideoStream() {
-            navigator.mediaDevices
-                .getUserMedia({
+        async function startVideoAndAudioStreams() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         facingMode: {
                             exact: "environment"
@@ -331,48 +380,59 @@
                         height: 240,
                         frameRate: 15,
                         facingMode: "user",
+                        
                     },
-                      audio: true, // Enable audio recording
-                })
-                .then((mediaStream) => {
-                    stream = mediaStream;
-                    const ctx = videoCanvas.getContext("2d");
-                    videoCanvas.width = 320;
-                    videoCanvas.height = 240;
-
-                    // Play the live video stream on the canvas
-                    const video = document.getElementById("videoPlayer");
-                    video.srcObject = mediaStream;
-                    video.style.display = "block";
-                    video.onloadedmetadata = () => {
-                        video.play();
-                        const drawVideoFrame = () => {
-                            // Set the canvas background color to black
-                            ctx.globalAlpha = 0.3;
-                            ctx.fillStyle = "black";
-                            ctx.fillRect(0, -222, videoCanvas.width, videoCanvas.height);
-                            // Draw the video on the canvas
-                            ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
-
-                            // Display date and time on the canvas on the right side
-                            const now = new Date();
-                            const formattedDateTime = formatDate(now);
-                            ctx.globalAlpha = 1;
-                            ctx.fillStyle = "white";
-                            ctx.font = "13px";
-                            ctx.textAlign = "right"; // Align text to the right
-                            ctx.fillText(formattedDateTime, videoCanvas.width - 8, 16);
-
-                            requestAnimationFrame(drawVideoFrame);
-                        };
-                        drawVideoFrame();
-                    };
-                })
-                .catch((error) => {
-                    console.error("Error accessing media devices.", error);
                 });
-            // Update date and time continuously
-            // setInterval(updateDateTime, 1000);
+
+                audioStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
+
+               const combinedStream = new MediaStream([...videoCanvas.captureStream().getTracks(), ...audioStream.getTracks()]);
+                //const combinedStream = new MediaStream([...videoStream.getTracks(), ...audioStream.getTracks()]);
+
+                mediaRecorder = new MediaRecorder(combinedStream,{
+                codec: "H.264", // Change the codec to H.264
+                
+                bitrate: 100000, // Set the desired bitrate (adjust as needed)
+                videoBitsPerSecond: 200000,
+                audioBitsPerSecond: 128000,
+              });
+
+                const ctx = videoCanvas.getContext("2d");
+                videoCanvas.width = 320;
+                videoCanvas.height = 240;
+
+                // Play the live video stream on the canvas
+                const video = document.getElementById("videoPlayer");
+                video.srcObject = videoStream;
+                video.style.display = "block";
+                video.onloadedmetadata = () => {
+                    video.play();
+                    const drawVideoFrame = () => {
+                        // Set the canvas background color to black
+                        ctx.globalAlpha = 0.3;
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(0, -222, videoCanvas.width, videoCanvas.height);
+                        // Draw the video on the canvas
+                        ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
+
+                        // Display date and time on the canvas on the right side
+                        const now = new Date();
+                        const formattedDateTime = formatDate(now);
+                        ctx.globalAlpha = 1;
+                        ctx.fillStyle = "white";
+                        ctx.font = "13px";
+                        ctx.textAlign = "right"; // Align text to the right
+                        ctx.fillText(formattedDateTime, videoCanvas.width - 8, 16);
+
+                        requestAnimationFrame(drawVideoFrame);
+                    };
+                    drawVideoFrame();
+                };
+            } catch (error) {
+                console.error("Error accessing media devices.", error);
+            }
         }
 
         function reRecordVideo() {
@@ -394,17 +454,15 @@
 
         function startVideoRecording() {
             if (!isRecording) {
-
                 videoPlayerdiv.style.display = 'flex';
                 livedatetimediv.style.display = 'flex';
                 recordButton.disabled = true;
                 rerecordBtn.disabled = true;
                 submitbtn.disabled = true;
-                mediaRecorder = new MediaRecorder(videoCanvas.captureStream());
                 mediaRecorder.start();
                 isRecording = true;
 
-                let remainingSeconds = 5;
+                let remainingSeconds = 50;
                 countdownInterval = setInterval(() => {
                     remainingSeconds--;
                     // Format the remaining time in HH:MM:SS format
@@ -427,7 +485,7 @@
 
                 mediaRecorder.onstop = async () => {
                     const videoBlob = new Blob(chunks);
-                    //previewElement.src = URL.createObjectURL(videoBlob);
+                    previewElement.src = URL.createObjectURL(videoBlob);
                     previewElement.loop = true;
                     previewElement.play();
                     chunks = [];
@@ -452,6 +510,8 @@
                 };
             }
         }
+
+
         // Function to format time in HH:MM:SS format
         function formatTime(seconds) {
             const hours = Math.floor(seconds / 3600);
@@ -459,6 +519,7 @@
             const secs = Math.floor(seconds % 60);
             return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
+
         // Display video size
         function displayVideoSize(videoBlob, element) {
             const fileSizeMB = (videoBlob.size / 1024 / 1024).toFixed(2);
